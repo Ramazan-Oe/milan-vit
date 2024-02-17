@@ -156,10 +156,34 @@ class ModelConfig(hubs.ModelConfig):
         self.layers = layers
         self.exemplars = exemplars or ModelExemplarsConfig()
 
+###############################################################
+from timm.models.vision_transformer import vit_base_patch16_224
+###############################################################
 
 def default_model_configs(**others: ModelConfig) -> Mapping[str, ModelConfig]:
     """Return the default model configs."""
     configs = {
+        "vit16/imagenet1000":
+            ModelConfig(
+                vit_base_patch16_224,
+                pretrained=True,
+                load_weights=False,
+                layers=('blocks.0.mlp.fc2',
+                        'blocks.1.mlp.fc2',
+                        'blocks.2.mlp.fc2',
+                        'blocks.3.mlp.fc2',
+                        'blocks.4.mlp.fc2',
+                        'blocks.5.mlp.fc2',
+                        'blocks.6.mlp.fc2',
+                        'blocks.7.mlp.fc2',
+                        'blocks.8.mlp.fc2',
+                        'blocks.9.mlp.fc2',
+                        'blocks.10.mlp.fc2',
+                        'blocks.11.mlp.fc2',),
+                exemplars=DiscriminativeModelExemplarsConfig(
+                    transform_hiddens=transforms.spatialize_vit_mlp,
+                    batch_size=32),
+            ),
         KEYS.ALEXNET_IMAGENET:
             ModelConfig(
                 models.alexnet_seq,

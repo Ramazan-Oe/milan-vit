@@ -57,6 +57,14 @@ def default_dataset_configs(
 ) -> Mapping[str, hubs.DatasetConfig]:
     """Return the default dataset configs."""
     configs = {
+        "imagenet1000":
+            hubs.DatasetConfig(torchvision.datasets.ImageFolder,
+                               transform=torchvision.transforms.Compose([
+                                   torchvision.transforms.Resize(256),
+                                   torchvision.transforms.CenterCrop(224),
+                                   torchvision.transforms.ToTensor(),
+                                   renormalize.NORMALIZER['imagenet']
+                               ])),
         KEYS.IMAGENET:
             hubs.DatasetConfig(torchvision.datasets.ImageFolder,
                                transform=torchvision.transforms.Compose([

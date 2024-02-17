@@ -86,10 +86,17 @@ KEYS.NOT_RESNET152_PLACES365 = f'not-{KEYS.RESNET152}-{KEYS.PLACES365}'
 KEYS.NOT_BIGGAN_IMAGENET = f'not-{KEYS.BIGGAN}-{KEYS.IMAGENET}'
 KEYS.NOT_BIGGAN_PLACES365 = f'not-{KEYS.BIGGAN}-{KEYS.PLACES365}'
 
+################################################
+KEYS.VIT16 = "vit16"
+KEYS.IMAGENET1000 = "imagenet1000"
+KEYS.VIT16_IMAGENET1000 = "vit16/imagenet1000"
+################################################
+
 # Different partitions of MILANNOTATIONS based on the generalization
 # experiments from the original paper.
 DATASET_GROUPINGS = {
     KEYS.BASE: (
+        KEYS.VIT16_IMAGENET1000, # Our own model
         KEYS.ALEXNET_IMAGENET,
         KEYS.ALEXNET_PLACES365,
         KEYS.RESNET152_IMAGENET,
@@ -213,6 +220,12 @@ def default_dataset_configs(
             key = KEYS[f'{model.upper()}_{dataset.upper().replace("-", "_")}']
             configs[key] = hubs.DatasetConfig(
                 merges.maybe_merge_and_load_dataset)
+    
+    # New ViT models using the Imagenet1000 validation set
+    for key in (KEYS.VIT16_IMAGENET1000,):
+        arch, dataset = key.split('/')
+        configs[key] = hubs.DatasetConfig(
+            merges.maybe_merge_and_load_dataset)
 
     configs.update(others)
     return configs
